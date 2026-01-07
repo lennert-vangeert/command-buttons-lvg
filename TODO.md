@@ -1,0 +1,3 @@
+- Add icon to extension
+- Add correct link to pop up or remove completely
+- Add features
