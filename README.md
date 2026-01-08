@@ -302,19 +302,12 @@ Save space in your status bar:
 }
 ```
 
-## ⚙️ Features
+## Features
 
 - **Live Reload** - Buttons automatically update when you edit the config file
 - **Terminal Integration** - Commands run in VS Code's integrated terminal
 - **Flexible Styling** - Use any color format (hex, rgb, named colors)
 - **Workspace Specific** - Different button configurations per project
-
-## 📝 Tips
-
-- Keep frequently-used commands easily accessible
-- Use contrasting colors to differentiate button types
-- Combine text and icon-only buttons based on your workflow
-- For monorepos, use the `directory` field to target specific packages
 
 ---
 
