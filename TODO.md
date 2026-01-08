@@ -1,3 +1,7 @@
 - Add icon to extension
-- Add correct link to pop up or remove completely
+- Add correct link to pop up or remove completely (Don't show popup every time vscode starts)
 - Add features
+- When there is no directory provided in the config we dont run cd
+- When there is no text provided in the config we dont show anything
+- Better README
+- (Add setting to open in seperate terminal outside of vscode)
