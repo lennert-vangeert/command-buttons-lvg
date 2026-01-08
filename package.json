@@ -2,12 +2,13 @@
   "name": "command-buttons-lvg",
   "displayName": "command-buttons-lvg",
   "description": "An extension to add customizable command buttons to the VSCode status bar.",
+  "icon": ".github/images/icon.png",
   "publisher": "lennert-vangeert",
   "repository": {
     "type": "git",
     "url": "https://github.com/lennert-vangeert/command-buttons-lvg"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "engines": {
     "vscode": "^1.107.0"
@@ -42,15 +43,18 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.107.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.48.1",
-    "eslint": "^9.39.1",
+    "@types/vscode": "^1.107.0",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.27.1",
+    "eslint": "^9.39.1",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "typescript-eslint": "^8.48.1"
+  },
+  "dependencies": {
+    "zod": "^4.3.5"
   }
 }

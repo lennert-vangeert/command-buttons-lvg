@@ -1,32 +1,321 @@
 # Command Buttons
 
-Add configurable buttons to the VS Code status bar that run project commands.
+Add beautiful, customizable buttons to your VS Code status bar that run your most-used commands with a single click.
 
-## Usage
+## Quick Start
 
-Add this to your project `.command-buttons.json` at the root of the workspace:
-
-the file should look something like this:
+Create a `.command-buttons.json` file at the root of your workspace:
 
 ```json
 {
   "buttons": [
     {
-      "icon": "rocket", // see https://microsoft.github.io/vscode-codicons/dist/codicon.html for available icons
-      "color": "#00ffcc", // any valid CSS color
-      "text": "Dev", // text to show next to the icon
-      "directory": "web", // directory to run the command in (relative to workspace root)
-      "command": "npm run dev" // command to run when button is clicked
-    },
-    {
-      "icon": "check",
-      "color": "green",
-      "text": "Lint",
-      "directory": "web",
-      "command": "npm run lint"
+      "icon": "rocket",
+      "color": "#00ffcc",
+      "text": "Dev",
+      "command": "npm run dev"
     }
   ]
 }
 ```
 
-The config file is continuously monitored for changes, so buttons will be added/removed as you edit the file.
+That's it! Your button will appear in the status bar, ready to launch your dev server.
+
+![Demo](.github/images/demo.png)
+
+## Configuration
+
+### Required Fields
+
+| Field     | Description         | Example                                  |
+| --------- | ------------------- | ---------------------------------------- |
+| `icon`    | Icon to display     | `"rocket"`                               |
+| `color`   | Any valid CSS color | `"#00ffcc"`, `"green"`, `"rgb(255,0,0)"` |
+| `command` | Command to execute  | `"npm run dev"`                          |
+
+> 💡 Find available icons at [VS Code Codicons](https://microsoft.github.io/vscode-codicons/dist/codicon.html)
+
+### Optional Fields
+
+| Field       | Description                                                | Example |
+| ----------- | ---------------------------------------------------------- | ------- |
+| `text`      | Text label next to icon (omit for icon-only buttons)       | `"Dev"` |
+| `directory` | Working directory for command (relative to workspace root) | `"web"` |
+
+## Examples
+
+### Basic Setup
+
+Perfect for single-package projects:
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "rocket",
+      "color": "#00ffcc",
+      "text": "Dev",
+      "command": "npm run dev"
+    },
+    {
+      "icon": "package",
+      "color": "rgba(255, 153, 0, 1)",
+      "text": "Build",
+      "command": "npm run build"
+    },
+    {
+      "icon": "beaker",
+      "color": "#00ff00",
+      "text": "Test",
+      "command": "npm test"
+    }
+  ]
+}
+```
+
+### Monorepo Configuration
+
+Target specific packages in your monorepo:
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "globe",
+      "color": "#61DAFB",
+      "text": "Web",
+      "directory": "packages/web",
+      "command": "npm run dev"
+    },
+    {
+      "icon": "server",
+      "color": "#68A063",
+      "text": "API",
+      "directory": "packages/api",
+      "command": "npm run dev"
+    },
+    {
+      "icon": "database",
+      "color": "#336791",
+      "text": "DB",
+      "directory": "packages/database",
+      "command": "npm run migrate"
+    }
+  ]
+}
+```
+
+### Icon-Only Buttons
+
+Save space in your status bar:
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "play",
+      "color": "#4CAF50",
+      "command": "npm start"
+    },
+    {
+      "icon": "debug-stop",
+      "color": "#f44336",
+      "command": "npm run stop"
+    },
+    {
+      "icon": "refresh",
+      "color": "#2196F3",
+      "command": "npm run restart"
+    }
+  ]
+}
+```
+
+### Python Projects
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "play",
+      "color": "#3776AB",
+      "text": "Run",
+      "command": "python main.py"
+    },
+    {
+      "icon": "package",
+      "color": "#FFD43B",
+      "text": "Install",
+      "command": "pip install -r requirements.txt"
+    },
+    {
+      "icon": "beaker",
+      "color": "#0A9396",
+      "text": "Test",
+      "command": "pytest"
+    },
+    {
+      "icon": "check",
+      "color": "#94D2BD",
+      "text": "Lint",
+      "command": "flake8 . && black --check ."
+    }
+  ]
+}
+```
+
+### Docker Workflows
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "vm",
+      "color": "#2496ED",
+      "text": "Docker Up",
+      "command": "docker-compose up -d"
+    },
+    {
+      "icon": "debug-stop",
+      "color": "#DC382D",
+      "text": "Docker Down",
+      "command": "docker-compose down"
+    },
+    {
+      "icon": "refresh",
+      "color": "#FFA500",
+      "text": "Rebuild",
+      "command": "docker-compose up -d --build"
+    }
+  ]
+}
+```
+
+### Git Shortcuts
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "git-pull-request",
+      "color": "#F05032",
+      "command": "git pull"
+    },
+    {
+      "icon": "cloud-upload",
+      "color": "#28A745",
+      "command": "git push"
+    },
+    {
+      "icon": "git-branch",
+      "color": "#6E5494",
+      "command": "git status"
+    }
+  ]
+}
+```
+
+### Database Operations
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "database",
+      "color": "#4479A1",
+      "text": "Migrate",
+      "command": "npx prisma migrate dev"
+    },
+    {
+      "icon": "symbol-field",
+      "color": "#00758F",
+      "text": "Seed",
+      "command": "npx prisma db seed"
+    },
+    {
+      "icon": "console",
+      "color": "#E38C00",
+      "text": "Studio",
+      "command": "npx prisma studio"
+    }
+  ]
+}
+```
+
+### Shell Scripts & Build Tools
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "terminal",
+      "color": "#89B4FA",
+      "text": "Setup",
+      "command": "bash scripts/setup.sh"
+    },
+    {
+      "icon": "wand",
+      "color": "#B4BEFE",
+      "text": "Generate",
+      "command": "./scripts/codegen.sh"
+    },
+    {
+      "icon": "tools",
+      "color": "#F5C2E7",
+      "text": "Make",
+      "command": "make build"
+    },
+    {
+      "icon": "symbol-namespace",
+      "color": "#CBA6F7",
+      "text": "Gradle",
+      "command": "./gradlew build"
+    }
+  ]
+}
+```
+
+### File Operations & Utilities
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "trash",
+      "color": "#EE5A6F",
+      "text": "Clean",
+      "command": "rm -rf dist/ && rm -rf node_modules/.cache"
+    },
+    {
+      "icon": "folder-opened",
+      "color": "#F9E2AF",
+      "text": "Open Logs",
+      "command": "code logs/"
+    },
+    {
+      "icon": "file-zip",
+      "color": "#FAB387",
+      "text": "Archive",
+      "command": "tar -czf backup-$(date +%Y%m%d).tar.gz src/"
+    }
+  ]
+}
+```
+
+## ⚙️ Features
+
+- **Live Reload** - Buttons automatically update when you edit the config file
+- **Terminal Integration** - Commands run in VS Code's integrated terminal
+- **Flexible Styling** - Use any color format (hex, rgb, named colors)
+- **Workspace Specific** - Different button configurations per project
+
+## 📝 Tips
+
+- Keep frequently-used commands easily accessible
+- Use contrasting colors to differentiate button types
+- Combine text and icon-only buttons based on your workflow
+- For monorepos, use the `directory` field to target specific packages
+
+---
+
+**Happy coding!** 🎉

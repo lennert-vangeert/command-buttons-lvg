@@ -8,25 +8,42 @@ export const runCommandInTerminal = (command: string, directory?: string) => {
   let terminal = vscode.window.terminals.find(
     (term) => term.name === "VS Code Buttons"
   );
+
+  const isNewTerminal = !terminal;
+
   if (!terminal) {
     terminal = vscode.window.createTerminal("VS Code Buttons");
   }
 
   terminal.show();
 
-  // Send ctrl+c first to stop any running process
-  terminal.sendText("\x03");
+  // For existing terminals, stop any running process first
+  if (!isNewTerminal) {
+    // Send Ctrl+C to stop any running process (like a dev server)
+    terminal.sendText("\u0003"); // Using unicode for better compatibility
+    console.log("Stopping any running process...");
+  }
 
-  // Wait a bit before sending the next commands
+  // Wait for process to stop and terminal to be ready
+  const delay = isNewTerminal ? 10 : 250;
   setTimeout(() => {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
     if (directory) {
-      const workspaceFolders = vscode.workspace.workspaceFolders;
+      console.log("Changing directory to: " + directory);
       if (workspaceFolders) {
         const rootPath = workspaceFolders[0].uri.fsPath;
         const targetPath = path.join(rootPath, directory);
-        terminal!.sendText(`cd "${targetPath}"`);
+        if (rootPath !== targetPath) {
+          terminal!.sendText(`cd "${targetPath}"`);
+        }
       }
     }
+    if (workspaceFolders && !directory) {
+      // If no directory is specified, ensure we're in the workspace root
+      const rootPath = workspaceFolders[0].uri.fsPath;
+      terminal!.sendText(`cd "${rootPath}"`);
+    }
+    console.log("Sending command: " + command);
     terminal!.sendText(command);
-  }, 100);
+  }, delay);
 };

@@ -8,13 +8,6 @@ import { createStatusBarButtons, clearStatusBarButtons } from "./utils/gen";
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   // show message when the extension is activated for the first time
-  vscode.window
-    .showInformationMessage("Command buttons extension activated!", "More info")
-    .then((selection) => {
-      if (selection === "More info") {
-        vscode.env.openExternal(vscode.Uri.parse("https://www.google.com"));
-      }
-    });
 
   const loadButtons = () => {
     const buttons = readConfig();
@@ -46,6 +39,11 @@ export function activate(context: vscode.ExtensionContext) {
         }
       });
     loadButtons();
+  });
+
+  watcher.onDidDelete(() => {
+    vscode.window.showInformationMessage("Command buttons config deleted!");
+    clearStatusBarButtons();
   });
   context.subscriptions.push(watcher);
 }
