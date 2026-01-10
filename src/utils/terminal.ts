@@ -25,7 +25,18 @@ export const runCommandInTerminal = (
   let isNewTerminal = !terminal;
 
   if (!terminal || !settings.reuseTerminal) {
-    terminal = vscode.window.createTerminal(settings.defaultTerminalName);
+    const iconPath = vscode.Uri.joinPath(
+      vscode.extensions.getExtension("lennert-vangeert.command-buttons-lvg")!
+        .extensionUri,
+      ".github",
+      "images",
+      "icon.png"
+    );
+
+    terminal = vscode.window.createTerminal({
+      name: settings.defaultTerminalName,
+      iconPath: iconPath,
+    });
     isNewTerminal = true; // Mark as new terminal since we just created it
   }
 
