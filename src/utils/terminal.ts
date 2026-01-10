@@ -1,21 +1,35 @@
 import * as vscode from "vscode";
 import * as path from "path";
+import { settings } from "./settings";
 
-export const runCommandInTerminal = (command: string, directory?: string) => {
+/**
+ * Executes a command in the VS Code integrated terminal.
+ * Creates or reuses a terminal based on settings, handles directory changes,
+ * and stops running processes if reusing an existing terminal.
+ *
+ * @param command - The command to execute in the terminal
+ * @param directory - Optional directory path relative to workspace root to execute the command in
+ * @returns Promise that resolves when the command has been sent to the terminal
+ */
+export const runCommandInTerminal = (
+  command: string,
+  directory?: string
+): Promise<void> => {
   console.log("Running command in terminal: " + command);
 
-  // check if a terminal named "VS Code Buttons" already exists
+  // check if a terminal named "VS Code Buttons" already exists.
   let terminal = vscode.window.terminals.find(
-    (term) => term.name === "VS Code Buttons"
+    (term) => term.name === settings.defaultTerminalName
   );
 
-  const isNewTerminal = !terminal;
+  let isNewTerminal = !terminal;
 
-  if (!terminal) {
-    terminal = vscode.window.createTerminal("VS Code Buttons");
+  if (!terminal || !settings.reuseTerminal) {
+    terminal = vscode.window.createTerminal(settings.defaultTerminalName);
+    isNewTerminal = true; // Mark as new terminal since we just created it
   }
 
-  terminal.show();
+  terminal.show(!settings.focusTerminalOnRun);
 
   // For existing terminals, stop any running process first
   if (!isNewTerminal) {
@@ -26,24 +40,27 @@ export const runCommandInTerminal = (command: string, directory?: string) => {
 
   // Wait for process to stop and terminal to be ready
   const delay = isNewTerminal ? 10 : 250;
-  setTimeout(() => {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
-    if (directory) {
-      console.log("Changing directory to: " + directory);
-      if (workspaceFolders) {
-        const rootPath = workspaceFolders[0].uri.fsPath;
-        const targetPath = path.join(rootPath, directory);
-        if (rootPath !== targetPath) {
-          terminal!.sendText(`cd "${targetPath}"`);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const workspaceFolders = vscode.workspace.workspaceFolders;
+      if (directory) {
+        console.log("Changing directory to: " + directory);
+        if (workspaceFolders) {
+          const rootPath = workspaceFolders[0].uri.fsPath;
+          const targetPath = path.join(rootPath, directory);
+          if (rootPath !== targetPath) {
+            terminal!.sendText(`cd "${targetPath}"`);
+          }
         }
       }
-    }
-    if (workspaceFolders && !directory) {
-      // If no directory is specified, ensure we're in the workspace root
-      const rootPath = workspaceFolders[0].uri.fsPath;
-      terminal!.sendText(`cd "${rootPath}"`);
-    }
-    console.log("Sending command: " + command);
-    terminal!.sendText(command);
-  }, delay);
+      if (workspaceFolders && !directory) {
+        // If no directory is specified, ensure we're in the workspace root
+        const rootPath = workspaceFolders[0].uri.fsPath;
+        terminal!.sendText(`cd "${rootPath}"`);
+      }
+      console.log("Sending command: " + command);
+      terminal!.sendText(command);
+      resolve();
+    }, delay);
+  });
 };

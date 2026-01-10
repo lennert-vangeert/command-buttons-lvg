@@ -3,11 +3,18 @@
 import * as vscode from "vscode";
 import { readConfig } from "./utils/read";
 import { createStatusBarButtons, clearStatusBarButtons } from "./utils/gen";
+import { readSettings, settings } from "./utils/settings";
+import { showReloadMessage } from "./utils/messaging";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+/**
+ * Activates the Command Buttons extension.
+ * Sets up configuration watchers, loads initial buttons, and manages lifecycle.
+ *
+ * @param context - VS Code extension context for managing subscriptions and resources
+ */
 export function activate(context: vscode.ExtensionContext) {
-  // show message when the extension is activated for the first time
+  readSettings();
+  let configFileWatcher: vscode.FileSystemWatcher | undefined;
 
   const loadButtons = () => {
     const buttons = readConfig();
@@ -17,36 +24,63 @@ export function activate(context: vscode.ExtensionContext) {
     }
   };
 
+  const setupConfigWatcher = () => {
+    // Dispose old watcher if it exists
+    if (configFileWatcher) {
+      configFileWatcher.dispose();
+      configFileWatcher = undefined;
+    }
+
+    // Only create watcher if watchConfigFile is enabled
+    if (!settings.watchConfigFile) {
+      return;
+    }
+
+    // Watch for config file changes
+    configFileWatcher = vscode.workspace.createFileSystemWatcher(
+      `**/${settings.configFileName}`
+    );
+
+    configFileWatcher.onDidChange(() => {
+      showReloadMessage("Command buttons config changed!");
+      loadButtons();
+    });
+
+    configFileWatcher.onDidCreate(() => {
+      showReloadMessage("Command buttons config created!", "initial");
+      loadButtons();
+    });
+
+    configFileWatcher.onDidDelete(() => {
+      showReloadMessage("Command buttons config deleted!");
+      clearStatusBarButtons();
+    });
+
+    context.subscriptions.push(configFileWatcher);
+  };
+
+  const settingsWatcher = vscode.workspace.onDidChangeConfiguration((event) => {
+    if (event.affectsConfiguration("commandButtons")) {
+      readSettings();
+
+      // Recreate the config file watcher with new settings
+      setupConfigWatcher();
+
+      // Reload buttons with fresh config
+      loadButtons();
+    }
+  });
+  context.subscriptions.push(settingsWatcher);
+
   // Initial load
   loadButtons();
 
-  // Watch for config file changes
-  const watcher = vscode.workspace.createFileSystemWatcher(
-    "**/.command-buttons.json"
-  );
-
-  watcher.onDidChange(() => {
-    vscode.window.showInformationMessage("Command buttons config reloaded!");
-    loadButtons();
-  });
-
-  watcher.onDidCreate(() => {
-    vscode.window
-      .showInformationMessage("Command buttons config created!", "More info")
-      .then((selection) => {
-        if (selection === "More info") {
-          vscode.env.openExternal(vscode.Uri.parse("https://www.google.com"));
-        }
-      });
-    loadButtons();
-  });
-
-  watcher.onDidDelete(() => {
-    vscode.window.showInformationMessage("Command buttons config deleted!");
-    clearStatusBarButtons();
-  });
-  context.subscriptions.push(watcher);
+  // Setup initial config file watcher
+  setupConfigWatcher();
 }
 
-// This method is called when your extension is deactivated
+/**
+ * Deactivates the Command Buttons extension.
+ * Performs cleanup when the extension is deactivated.
+ */
 export function deactivate() {}

@@ -309,6 +309,41 @@ Save space in your status bar:
 - **Flexible Styling** - Use any color format (hex, rgb, named colors)
 - **Workspace Specific** - Different button configurations per project
 
+## Extension Settings
+
+This extension contributes the following settings:
+
+### Terminal Settings
+
+| Setting                              | Type      | Default                      | Description                                                                       |
+| ------------------------------------ | --------- | ---------------------------- | --------------------------------------------------------------------------------- |
+| `commandButtons.defaultTerminalName` | `string`  | `"Command Buttons Terminal"` | The name of the terminal used for executing commands                              |
+| `commandButtons.reuseTerminal`       | `boolean` | `true`                       | Whether to reuse the same terminal for all commands or create a new one each time |
+| `commandButtons.focusTerminalOnRun`  | `boolean` | `true`                       | Whether to automatically focus the terminal when a command is executed            |
+
+### Notification Settings
+
+| Setting                                 | Type      | Default | Description                                               |
+| --------------------------------------- | --------- | ------- | --------------------------------------------------------- |
+| `commandButtons.showReloadNotification` | `boolean` | `true`  | Show a notification when the config file is reloaded      |
+| `commandButtons.showErrorNotifications` | `boolean` | `true`  | Show notifications for validation errors and other issues |
+
+### UI Settings
+
+| Setting                                      | Type      | Default  | Description                                                           |
+| -------------------------------------------- | --------- | -------- | --------------------------------------------------------------------- |
+| `commandButtons.statusBarAlignment`          | `string`  | `"left"` | Position of buttons in the status bar. Options: `"left"` or `"right"` |
+| `commandButtons.showButtonTooltips`          | `boolean` | `true`   | Show tooltips (command text) when hovering over buttons               |
+| `commandButtons.iconOnlyMode`                | `boolean` | `false`  | Force all buttons to show only icons, hiding text labels              |
+| `commandButtons.showCommandRunningIndicator` | `boolean` | `true`   | Show animated spinner icon on buttons while their command is running  |
+
+### Configuration File Settings
+
+| Setting                          | Type      | Default                   | Description                                               |
+| -------------------------------- | --------- | ------------------------- | --------------------------------------------------------- |
+| `commandButtons.configFileName`  | `string`  | `".command-buttons.json"` | Name of the configuration file in the workspace root      |
+| `commandButtons.watchConfigFile` | `boolean` | `true`                    | Automatically reload buttons when the config file changes |
+
 ---
 
 **Happy coding!** 🎉
