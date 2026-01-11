@@ -1,6 +1,39 @@
 import * as vscode from "vscode";
 import * as path from "path";
+import { exec } from "child_process";
 import { settings } from "./settings";
+
+/**
+ * Executes a command in Ghostty terminal emulator.
+ * Opens a new Ghostty window with the specified command.
+ *
+ * @param command - The command to execute
+ * @param directory - Optional directory path relative to workspace root
+ * @returns Promise that resolves when Ghostty is launched
+ */
+const runInGhostty = (command: string, directory?: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    const cwd = directory && workspaceFolders
+      ? path.join(workspaceFolders[0].uri.fsPath, directory)
+      : workspaceFolders?.[0].uri.fsPath;
+
+    // Ghostty command: ghostty -e <shell> -c <command>
+    const ghosttyCmd = `ghostty -e bash -c "cd '${cwd}' && ${command}; exec bash"`;
+
+    exec(ghosttyCmd, (error) => {
+      if (error) {
+        console.error("Failed to launch Ghostty:", error);
+        vscode.window.showErrorMessage(
+          `Failed to launch Ghostty. Make sure it's installed and in your PATH.`
+        );
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
 
 /**
  * Executes a command in the VS Code integrated terminal.
@@ -11,7 +44,7 @@ import { settings } from "./settings";
  * @param directory - Optional directory path relative to workspace root to execute the command in
  * @returns Promise that resolves when the command has been sent to the terminal
  */
-export const runCommandInTerminal = (
+const runInVSCodeTerminal = (
   command: string,
   directory?: string
 ): Promise<void> => {
@@ -74,4 +107,23 @@ export const runCommandInTerminal = (
       resolve();
     }, delay);
   });
+};
+
+/**
+ * Executes a command in the configured terminal (VS Code or Ghostty).
+ * Routes to the appropriate terminal implementation based on settings.
+ *
+ * @param command - The command to execute
+ * @param directory - Optional directory path relative to workspace root
+ * @returns Promise that resolves when the command has been executed
+ */
+export const runCommandInTerminal = (
+  command: string,
+  directory?: string
+): Promise<void> => {
+  if (settings.terminalType === "ghostty") {
+    return runInGhostty(command, directory);
+  } else {
+    return runInVSCodeTerminal(command, directory);
+  }
 };

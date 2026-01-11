@@ -28,6 +28,15 @@
           "default": "Command Buttons Terminal",
           "description": "The default name for the terminal used by command buttons."
         },
+        "commandButtons.terminalType": {
+          "type": "string",
+          "enum": [
+            "vscode",
+            "ghostty"
+          ],
+          "default": "vscode",
+          "description": "The terminal to use for executing commands. 'vscode' uses the integrated terminal, 'ghostty' opens commands in Ghostty terminal emulator."
+        },
         "commandButtons.reuseTerminal": {
           "type": "boolean",
           "default": true,

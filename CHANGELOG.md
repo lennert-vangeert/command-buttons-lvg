@@ -10,6 +10,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Add comprehensive settings system with support for:
   - `defaultTerminalName`: Custom terminal name
+  - `terminalType`: Choose between VS Code integrated terminal or Ghostty terminal emulator
   - `reuseTerminal`: Option to reuse or create new terminals
   - `focusTerminalOnRun`: Control terminal focus behavior
   - `showReloadNotification`: Toggle config reload notifications
@@ -22,6 +23,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - `showCommandRunningIndicator`: Toggle spinner display when commands are executing
 - Add messaging utilities for better user feedback
 - Implement settings validation and error handling
+- Add Ghostty terminal emulator support for external command execution
+- Add custom icon to terminals created by the extension
 
 ## [1.0.1] - 2026-01-08
 

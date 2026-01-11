@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 
 export type Settings = {
   defaultTerminalName: string;
+  terminalType: "vscode" | "ghostty";
   reuseTerminal: boolean;
   focusTerminalOnRun: boolean;
   showReloadNotification: boolean;

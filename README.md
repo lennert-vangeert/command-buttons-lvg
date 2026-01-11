@@ -315,11 +315,12 @@ This extension contributes the following settings:
 
 ### Terminal Settings
 
-| Setting                              | Type      | Default                      | Description                                                                       |
-| ------------------------------------ | --------- | ---------------------------- | --------------------------------------------------------------------------------- |
-| `commandButtons.defaultTerminalName` | `string`  | `"Command Buttons Terminal"` | The name of the terminal used for executing commands                              |
-| `commandButtons.reuseTerminal`       | `boolean` | `true`                       | Whether to reuse the same terminal for all commands or create a new one each time |
-| `commandButtons.focusTerminalOnRun`  | `boolean` | `true`                       | Whether to automatically focus the terminal when a command is executed            |
+| Setting                              | Type      | Default                      | Description                                                                                                                      |
+| ------------------------------------ | --------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `commandButtons.defaultTerminalName` | `string`  | `"Command Buttons Terminal"` | The name of the terminal used for executing commands                                                                             |
+| `commandButtons.terminalType`        | `string`  | `"vscode"`                   | The terminal to use for executing commands. Options: `"vscode"` (integrated terminal) or `"ghostty"` (Ghostty terminal emulator) |
+| `commandButtons.reuseTerminal`       | `boolean` | `true`                       | Whether to reuse the same terminal for all commands or create a new one each time (only applies to VS Code integrated terminal)  |
+| `commandButtons.focusTerminalOnRun`  | `boolean` | `true`                       | Whether to automatically focus the terminal when a command is executed (only applies to VS Code integrated terminal)             |
 
 ### Notification Settings
 
