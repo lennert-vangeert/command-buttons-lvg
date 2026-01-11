@@ -4,6 +4,13 @@ All notable changes to the "command-buttons" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.2.0] - 2026-01-11
+
+### Features
+
+- Add Ghostty terminal support for executing commands externally.
+- Add terminalName field in config to set custom terminal names, where commands can be grouped.
+
 ## [1.1.0] - 2026-01-10
 
 ### Features

@@ -20,23 +20,26 @@ export const clearStatusBarButtons = () => {
 };
 
 /**
+ * Checks if the running indicator should be shown.
+ * Disabled when using Ghostty since we can't track external terminal state.
+ */
+const shouldShowRunningIndicator = (): boolean => {
+  return settings.showCommandRunningIndicator && settings.terminalType !== "ghostty";
+};
+
+/**
  * Updates the button text to show spinner when command is running.
- *
- * @param index - The index of the button
- * @param btn - The button configuration
- * @param isRunning - Whether the command is currently running
  */
 const updateButtonText = (index: number, btn: Button, isRunning: boolean) => {
   const item = statusBarItems[index];
-  if (!item) return;
+  if (!item) { return; }
 
   const icon =
-    isRunning && settings.showCommandRunningIndicator
+    isRunning && shouldShowRunningIndicator()
       ? "loading~spin"
       : btn.icon;
-  item.text = `$(${icon}) ${
-    settings.iconOnlyMode ? "" : btn.text ?? ""
-  }`.trim();
+  item.text = `$(${icon}) ${settings.iconOnlyMode ? "" : btn.text ?? ""
+    }`.trim();
 };
 
 const truncateText = (
@@ -71,9 +74,8 @@ export const createStatusBarButtons = (
 
     const item = vscode.window.createStatusBarItem(alignment, 100 - index);
 
-    item.text = `$(${btn.icon}) ${
-      settings.iconOnlyMode ? "" : btn.text ?? ""
-    }`.trim();
+    item.text = `$(${btn.icon}) ${settings.iconOnlyMode ? "" : btn.text ?? ""
+      }`.trim();
     item.color = btn.color;
     item.tooltip = settings.showButtonTooltips
       ? truncateText(btn.command, 50)
@@ -84,15 +86,15 @@ export const createStatusBarButtons = (
     const commandDisposable = vscode.commands.registerCommand(
       commandId,
       async () => {
-        if (settings.showCommandRunningIndicator) {
+        if (shouldShowRunningIndicator()) {
           runningCommands.set(index, true);
           updateButtonText(index, btn, true);
         }
 
         try {
-          await runCommandInTerminal(btn.command, btn.directory);
+          await runCommandInTerminal(btn.command, btn.directory, btn.terminalName);
         } finally {
-          if (settings.showCommandRunningIndicator) {
+          if (shouldShowRunningIndicator()) {
             runningCommands.set(index, false);
             updateButtonText(index, btn, false);
           }
