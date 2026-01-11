@@ -37,10 +37,11 @@ That's it! Your button will appear in the status bar, ready to launch your dev s
 
 ### Optional Fields
 
-| Field       | Description                                                | Example |
-| ----------- | ---------------------------------------------------------- | ------- |
-| `text`      | Text label next to icon (omit for icon-only buttons)       | `"Dev"` |
-| `directory` | Working directory for command (relative to workspace root) | `"web"` |
+| Field          | Description                                                         | Example   |
+| -------------- | ------------------------------------------------------------------- | --------- |
+| `text`         | Text label next to icon (omit for icon-only buttons)                | `"Dev"`   |
+| `directory`    | Working directory for command (relative to workspace root)          | `"web"`   |
+| `terminalName` | Terminal name for grouping commands (buttons with same name share a terminal) | `"Web Server"` |
 
 ## Examples
 
@@ -72,6 +73,47 @@ Perfect for single-package projects:
   ]
 }
 ```
+
+### Grouped Terminals
+
+Run related commands in the same terminal using `terminalName`:
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "rocket",
+      "color": "#00ffcc",
+      "text": "Dev",
+      "command": "npm run dev",
+      "terminalName": "Dev Server"
+    },
+    {
+      "icon": "refresh",
+      "color": "#00ffcc",
+      "text": "Restart",
+      "command": "npm run dev",
+      "terminalName": "Dev Server"
+    },
+    {
+      "icon": "beaker",
+      "color": "#ff6b6b",
+      "text": "Test",
+      "command": "npm test",
+      "terminalName": "Tests"
+    },
+    {
+      "icon": "eye",
+      "color": "#ff6b6b",
+      "text": "Watch",
+      "command": "npm run test:watch",
+      "terminalName": "Tests"
+    }
+  ]
+}
+```
+
+Dev and Restart share the "Dev Server" terminal, while Test and Watch share the "Tests" terminal.
 
 ### Monorepo Configuration
 
@@ -305,7 +347,9 @@ Save space in your status bar:
 ## Features
 
 - **Live Reload** - Buttons automatically update when you edit the config file
-- **Terminal Integration** - Commands run in VS Code's integrated terminal
+- **Terminal Integration** - Commands run in VS Code's integrated terminal or Ghostty
+- **Ghostty Support** - Execute commands in the Ghostty terminal emulator (macOS)
+- **Terminal Grouping** - Group related commands into separate terminals using `terminalName`
 - **Flexible Styling** - Use any color format (hex, rgb, named colors)
 - **Workspace Specific** - Different button configurations per project
 
@@ -315,11 +359,14 @@ This extension contributes the following settings:
 
 ### Terminal Settings
 
-| Setting                              | Type      | Default                      | Description                                                                       |
-| ------------------------------------ | --------- | ---------------------------- | --------------------------------------------------------------------------------- |
-| `commandButtons.defaultTerminalName` | `string`  | `"Command Buttons Terminal"` | The name of the terminal used for executing commands                              |
-| `commandButtons.reuseTerminal`       | `boolean` | `true`                       | Whether to reuse the same terminal for all commands or create a new one each time |
-| `commandButtons.focusTerminalOnRun`  | `boolean` | `true`                       | Whether to automatically focus the terminal when a command is executed            |
+| Setting                              | Type      | Default                      | Description                                                                                                                      |
+| ------------------------------------ | --------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `commandButtons.defaultTerminalName` | `string`  | `"Command Buttons Terminal"` | The name of the terminal used for executing commands                                                                             |
+| `commandButtons.terminalType`        | `string`  | `"vscode"`                   | The terminal to use for executing commands. Options: `"vscode"` (integrated terminal) or `"ghostty"` (Ghostty terminal emulator) |
+| `commandButtons.reuseTerminal`       | `boolean` | `true`                       | Whether to reuse the same terminal for all commands or create a new one each time (only applies to VS Code integrated terminal)  |
+| `commandButtons.focusTerminalOnRun`  | `boolean` | `true`                       | Whether to automatically focus the terminal when a command is executed (only applies to VS Code integrated terminal)             |
+
+> **Note:** When using Ghostty, the following settings are not supported due to macOS limitations: `reuseTerminal`, `focusTerminalOnRun`, `showCommandRunningIndicator`, and the `terminalName` config field. Each command opens a new Ghostty window.
 
 ### Notification Settings
 

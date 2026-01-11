@@ -21,6 +21,7 @@ const ButtonSchema = z.object({
   text: z.string().optional(),
   directory: z.string().optional(),
   command: z.string().min(1, "Command must not be empty"),
+  terminalName: z.string().optional(),
 });
 
 const ConfigSchema = z.object({
