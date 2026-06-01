@@ -13,6 +13,9 @@ export type Settings = {
   configFileName: string;
   watchConfigFile: boolean;
   showCommandRunningIndicator: boolean;
+  rememberActiveTab: boolean;
+  defaultActiveTab: string;
+  activeTabHighlight: "prominent" | "warning" | "none";
 };
 
 export let settings: Settings;

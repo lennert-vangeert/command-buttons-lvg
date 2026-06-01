@@ -4,6 +4,16 @@ All notable changes to the "command-buttons" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [Unreleased]
+
+### Features
+
+- Add **tabs**: group buttons into clickable status bar tabs. Define them either with a nested `tabs` array (drives order, optional per-tab `icon`/`color`) or a flat per-button `tab` field. Buttons without a tab are pinned to every tab. Configs without tabs are unchanged.
+- Add tab settings: `rememberActiveTab` (restore the active tab per workspace), `defaultActiveTab`, and `activeTabHighlight`.
+- Add **config IntelliSense**: `.command-buttons.json` now gets autocomplete, hover docs, and inline validation in the editor via a bundled JSON schema.
+- Add **URL and VS Code command buttons**: a button can open a `url` in the browser or run a `vscodeCommand` (with optional `args`) instead of a shell `command`. Each button uses exactly one of the three.
+- Add **confirm prompts**: a `confirm` field (`true` or a custom message string) shows a confirmation modal before running — handy for destructive commands.
+
 ## [1.2.0] - 2026-01-11
 
 ### Features
