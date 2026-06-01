@@ -113,10 +113,10 @@
         }
       }
     },
-    "commands": [
+    "jsonValidation": [
       {
-        "command": "command-buttons.helloWorld",
-        "title": "Hello World"
+        "fileMatch": ".command-buttons.json",
+        "url": "./schemas/command-buttons.schema.json"
       }
     ]
   },

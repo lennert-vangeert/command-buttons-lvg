@@ -25,24 +25,65 @@ That's it! Your button will appear in the status bar, ready to launch your dev s
 
 ## Configuration
 
+> 💡 **Editor support:** `.command-buttons.json` gets autocomplete, hover docs, and inline validation automatically. Using a custom `configFileName`? Add `"$schema": "https://raw.githubusercontent.com/lennert-vangeert/command-buttons-lvg/main/schemas/command-buttons.schema.json"` to the top of your config to keep IntelliSense.
+
 ### Required Fields
 
-| Field     | Description         | Example                                  |
-| --------- | ------------------- | ---------------------------------------- |
-| `icon`    | Icon to display     | `"rocket"`                               |
-| `color`   | Any valid CSS color | `"#00ffcc"`, `"green"`, `"rgb(255,0,0)"` |
-| `command` | Command to execute  | `"npm run dev"`                          |
+| Field   | Description         | Example                                  |
+| ------- | ------------------- | ---------------------------------------- |
+| `icon`  | Icon to display     | `"rocket"`                               |
+| `color` | Any valid CSS color | `"#00ffcc"`, `"green"`, `"rgb(255,0,0)"` |
+
+Plus **exactly one action** — see [Action Types](#action-types).
 
 > 💡 Find available icons at [VS Code Codicons](https://microsoft.github.io/vscode-codicons/dist/codicon.html)
 
+### Action Types
+
+Every button needs **exactly one** of these:
+
+| Field           | Description                              | Example                            |
+| --------------- | ---------------------------------------- | ---------------------------------- |
+| `command`       | Shell command run in the terminal        | `"npm run dev"`                    |
+| `url`           | URL opened in your default browser       | `"https://localhost:3000"`         |
+| `vscodeCommand` | A built-in VS Code command id to execute | `"workbench.action.tasks.runTask"` |
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "rocket",
+      "color": "#00ffcc",
+      "text": "Dev",
+      "command": "npm run dev"
+    },
+    {
+      "icon": "globe",
+      "color": "#61DAFB",
+      "text": "Open",
+      "url": "https://localhost:3000"
+    },
+    {
+      "icon": "tasks",
+      "color": "#FFA500",
+      "text": "Build Task",
+      "vscodeCommand": "workbench.action.tasks.runTask",
+      "args": ["build"]
+    }
+  ]
+}
+```
+
 ### Optional Fields
 
-| Field          | Description                                                                              | Example        |
-| -------------- | ---------------------------------------------------------------------------------------- | -------------- |
-| `text`         | Text label next to icon (omit for icon-only buttons)                                     | `"Dev"`        |
-| `directory`    | Working directory for command (relative to workspace root)                               | `"web"`        |
-| `terminalName` | Terminal name for grouping commands (buttons with same name share a terminal)            | `"Web Server"` |
-| `tab`          | Tab this button belongs to (see [Tabs](#tabs)). Untagged buttons are pinned to every tab | `"Dev"`        |
+| Field          | Description                                                                              | Example          |
+| -------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| `text`         | Text label next to icon (omit for icon-only buttons)                                     | `"Dev"`          |
+| `directory`    | Working directory for command (relative to workspace root)                               | `"web"`          |
+| `terminalName` | Terminal name for grouping commands (buttons with same name share a terminal)            | `"Web Server"`   |
+| `tab`          | Tab this button belongs to (see [Tabs](#tabs)). Untagged buttons are pinned to every tab | `"Dev"`          |
+| `args`         | Arguments passed to `vscodeCommand`                                                      | `["build"]`      |
+| `confirm`      | Ask before running. `true` for a default prompt, or a string for a custom message        | `"Delete dist?"` |
 
 ## Examples
 

@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Command Buttons config",
+  "description": "Configuration for the Command Buttons VS Code extension. Define buttons directly, or group them into tabs. Keep in sync with src/utils/read.ts.",
+  "type": "object",
+  "properties": {
+    "tabs": {
+      "type": "array",
+      "description": "Tabs shown as clickable items in the status bar. The first tab is active by default.",
+      "items": { "$ref": "#/definitions/tab" }
+    },
+    "buttons": {
+      "type": "array",
+      "description": "Buttons. Without a 'tab' field they are pinned (shown on every tab); with one they join that tab.",
+      "items": { "$ref": "#/definitions/button" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "tab": {
+      "type": "object",
+      "required": ["name", "buttons"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tab label shown in the status bar."
+        },
+        "icon": {
+          "type": "string",
+          "description": "Optional Codicon name for the tab label, e.g. \"rocket\"."
+        },
+        "color": {
+          "type": "string",
+          "description": "Optional CSS color for the tab label."
+        },
+        "buttons": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Buttons belonging to this tab.",
+          "items": { "$ref": "#/definitions/button" }
+        }
+      }
+    },
+    "button": {
+      "type": "object",
+      "required": ["icon", "color"],
+      "additionalProperties": false,
+      "description": "A status bar button. Provide exactly one action: 'command', 'url', or 'vscodeCommand'.",
+      "properties": {
+        "icon": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Codicon name to display, e.g. \"rocket\". See https://microsoft.github.io/vscode-codicons/dist/codicon.html"
+        },
+        "color": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Any valid CSS color, e.g. \"#00ffcc\", \"green\", \"rgb(255,0,0)\"."
+        },
+        "text": {
+          "type": "string",
+          "description": "Optional label shown next to the icon. Omit for an icon-only button."
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Shell command to run in the terminal. One of 'command' / 'url' / 'vscodeCommand'."
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URL to open in the default browser. One of 'command' / 'url' / 'vscodeCommand'."
+        },
+        "vscodeCommand": {
+          "type": "string",
+          "minLength": 1,
+          "description": "VS Code command id to execute, e.g. \"workbench.action.tasks.runTask\". One of 'command' / 'url' / 'vscodeCommand'."
+        },
+        "args": {
+          "type": "array",
+          "description": "Arguments passed to 'vscodeCommand'.",
+          "items": {}
+        },
+        "directory": {
+          "type": "string",
+          "description": "Working directory for the shell command, relative to the workspace root."
+        },
+        "terminalName": {
+          "type": "string",
+          "description": "Terminal name for grouping shell commands. Buttons sharing a name reuse the same terminal."
+        },
+        "tab": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of the tab this button belongs to. Omit to pin it to every tab."
+        },
+        "confirm": {
+          "description": "Ask for confirmation before running. Use true for a default prompt, or a string for a custom message.",
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "string" }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -15,15 +15,37 @@ const endsWithJson = (filename: string): boolean => {
   return filename.toLowerCase().endsWith(".json");
 };
 
-const ButtonSchema = z.object({
-  icon: z.string().nonempty("Icon is required"),
-  color: z.string().min(1, "Color must not be empty"),
-  text: z.string().optional(),
-  directory: z.string().optional(),
-  command: z.string().min(1, "Command must not be empty"),
-  terminalName: z.string().optional(),
-  tab: z.string().min(1, "Tab name must not be empty").optional(),
-});
+// NOTE: keep this schema in sync with schemas/command-buttons.schema.json
+// (hand-maintained JSON Schema that powers in-editor IntelliSense).
+const ButtonSchema = z
+  .object({
+    icon: z.string().nonempty("Icon is required"),
+    color: z.string().min(1, "Color must not be empty"),
+    text: z.string().optional(),
+    directory: z.string().optional(),
+    terminalName: z.string().optional(),
+    tab: z.string().min(1, "Tab name must not be empty").optional(),
+    // Action fields — exactly one is required (see refine below).
+    command: z.string().min(1, "Command must not be empty").optional(),
+    url: z.string().min(1, "URL must not be empty").optional(),
+    vscodeCommand: z
+      .string()
+      .min(1, "VS Code command must not be empty")
+      .optional(),
+    args: z.array(z.unknown()).optional(),
+    confirm: z.union([z.boolean(), z.string()]).optional(),
+  })
+  .superRefine((b, ctx) => {
+    const actions = [b.command, b.url, b.vscodeCommand].filter(Boolean);
+    if (actions.length !== 1) {
+      ctx.addIssue({
+        code: "custom",
+        message:
+          "Exactly one of 'command', 'url', or 'vscodeCommand' is required",
+        path: ["command"],
+      });
+    }
+  });
 
 const TabSchema = z.object({
   name: z.string().min(1, "Tab name must not be empty"),

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { runCommandInTerminal } from "./terminal";
 import { NormalizedConfig, Button } from "./read";
+import { executeButton, isShellButton } from "./run";
 import { settings } from "./settings";
 
 const ACTIVE_TAB_STATE_KEY = "commandButtons.activeTab";
@@ -100,21 +100,29 @@ const createButtonItem = (
 ) => {
   const item = vscode.window.createStatusBarItem(getAlignment(), priority);
 
+  const actionText =
+    btn.command ??
+    btn.url ??
+    (btn.vscodeCommand ? `cmd: ${btn.vscodeCommand}` : "");
+
   item.color = btn.color;
   item.tooltip = settings.showButtonTooltips
-    ? truncateText(btn.command, 50)
+    ? truncateText(actionText, 50)
     : undefined;
   applyButtonText(item, btn, runningCommands.get(commandId) ?? false);
 
   const disposable = vscode.commands.registerCommand(commandId, async () => {
-    if (shouldShowRunningIndicator()) {
+    // Only shell commands have a meaningful running state; URL / VS Code
+    // command actions resolve instantly, so skip the spinner for them.
+    const showSpinner = shouldShowRunningIndicator() && isShellButton(btn);
+    if (showSpinner) {
       runningCommands.set(commandId, true);
       applyButtonText(item, btn, true);
     }
     try {
-      await runCommandInTerminal(btn.command, btn.directory, btn.terminalName);
+      await executeButton(btn);
     } finally {
-      if (shouldShowRunningIndicator()) {
+      if (showSpinner) {
         runningCommands.set(commandId, false);
         applyButtonText(item, btn, false);
       }
