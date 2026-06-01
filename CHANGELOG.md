@@ -4,6 +4,13 @@ All notable changes to the "command-buttons" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [Unreleased]
+
+### Features
+
+- Add **tabs**: group buttons into clickable status bar tabs. Define them either with a nested `tabs` array (drives order, optional per-tab `icon`/`color`) or a flat per-button `tab` field. Buttons without a tab are pinned to every tab. Configs without tabs are unchanged.
+- Add tab settings: `rememberActiveTab` (restore the active tab per workspace), `defaultActiveTab`, and `activeTabHighlight`.
+
 ## [1.2.0] - 2026-01-11
 
 ### Features

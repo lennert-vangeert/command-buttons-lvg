@@ -17,10 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
   let configFileWatcher: vscode.FileSystemWatcher | undefined;
 
   const loadButtons = () => {
-    const buttons = readConfig();
-    if (buttons) {
+    const config = readConfig();
+    if (config) {
       clearStatusBarButtons();
-      createStatusBarButtons(buttons, context);
+      createStatusBarButtons(config, context);
     }
   };
 
@@ -83,4 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
  * Deactivates the Command Buttons extension.
  * Performs cleanup when the extension is deactivated.
  */
-export function deactivate() {}
+export function deactivate() {
+  clearStatusBarButtons();
+}

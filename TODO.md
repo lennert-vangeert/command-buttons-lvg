@@ -1,1 +1,0 @@
-- terminalName - Custom terminal name per button (instead of shared "VS Code Buttons")

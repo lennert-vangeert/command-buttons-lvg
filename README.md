@@ -37,11 +37,12 @@ That's it! Your button will appear in the status bar, ready to launch your dev s
 
 ### Optional Fields
 
-| Field          | Description                                                         | Example   |
-| -------------- | ------------------------------------------------------------------- | --------- |
-| `text`         | Text label next to icon (omit for icon-only buttons)                | `"Dev"`   |
-| `directory`    | Working directory for command (relative to workspace root)          | `"web"`   |
-| `terminalName` | Terminal name for grouping commands (buttons with same name share a terminal) | `"Web Server"` |
+| Field          | Description                                                                              | Example        |
+| -------------- | ---------------------------------------------------------------------------------------- | -------------- |
+| `text`         | Text label next to icon (omit for icon-only buttons)                                     | `"Dev"`        |
+| `directory`    | Working directory for command (relative to workspace root)                               | `"web"`        |
+| `terminalName` | Terminal name for grouping commands (buttons with same name share a terminal)            | `"Web Server"` |
+| `tab`          | Tab this button belongs to (see [Tabs](#tabs)). Untagged buttons are pinned to every tab | `"Dev"`        |
 
 ## Examples
 
@@ -114,6 +115,111 @@ Run related commands in the same terminal using `terminalName`:
 ```
 
 Dev and Restart share the "Dev Server" terminal, while Test and Watch share the "Tests" terminal.
+
+## Tabs
+
+When you have a lot of buttons, group them into **tabs** to keep the status bar tidy. Each tab name appears as its own clickable item in the status bar, click a tab to show its buttons and hide the others. Only the active tab's buttons are shown, plus any **pinned** (untagged) buttons that stay visible on every tab.
+
+> If your config has no tabs at all, nothing changes, your buttons render exactly as before.
+
+### Nested style (recommended)
+
+Define a `tabs` array. The array order is the tab order, the first tab is active by default, and each tab can have an optional `icon` and `color`:
+
+```json
+{
+  "tabs": [
+    {
+      "name": "Dev",
+      "icon": "rocket",
+      "buttons": [
+        {
+          "icon": "play",
+          "color": "#4CAF50",
+          "text": "Start",
+          "command": "npm run dev"
+        },
+        {
+          "icon": "beaker",
+          "color": "#00ff00",
+          "text": "Test",
+          "command": "npm test"
+        }
+      ]
+    },
+    {
+      "name": "Deploy",
+      "icon": "cloud-upload",
+      "buttons": [
+        {
+          "icon": "package",
+          "color": "#FFA500",
+          "text": "Build",
+          "command": "npm run build"
+        },
+        {
+          "icon": "rocket",
+          "color": "#61DAFB",
+          "text": "Ship",
+          "command": "npm run deploy"
+        }
+      ]
+    }
+  ],
+  "buttons": [
+    {
+      "icon": "gear",
+      "color": "#888",
+      "text": "Settings",
+      "command": "code .vscode/settings.json"
+    }
+  ]
+}
+```
+
+Here `Settings` has no tab, so it's **pinned**, visible on both the Dev and Deploy tabs.
+
+### Flat style
+
+Prefer a single `buttons` array? Just add a `tab` field to any button. Buttons sharing a `tab` value group together (in first-seen order); buttons without a `tab` are pinned:
+
+```json
+{
+  "buttons": [
+    {
+      "icon": "play",
+      "color": "#4CAF50",
+      "text": "Start",
+      "command": "npm run dev",
+      "tab": "Dev"
+    },
+    {
+      "icon": "beaker",
+      "color": "#00ff00",
+      "text": "Test",
+      "command": "npm test",
+      "tab": "Dev"
+    },
+    {
+      "icon": "package",
+      "color": "#FFA500",
+      "text": "Build",
+      "command": "npm run build",
+      "tab": "Deploy"
+    },
+    {
+      "icon": "gear",
+      "color": "#888",
+      "text": "Settings",
+      "command": "code .vscode/settings.json"
+    }
+  ]
+}
+```
+
+You can mix both styles, a top-level button with a `tab` matching a nested tab joins that tab.
+
+> **Note:** With `statusBarAlignment` set to `"right"`, the visual order of tabs and buttons is mirrored.
 
 ### Monorepo Configuration
 
@@ -350,6 +456,7 @@ Save space in your status bar:
 - **Terminal Integration** - Commands run in VS Code's integrated terminal or Ghostty
 - **Ghostty Support** - Execute commands in the Ghostty terminal emulator (macOS)
 - **Terminal Grouping** - Group related commands into separate terminals using `terminalName`
+- **Tabs** - Organize buttons into clickable tabs, with pinned buttons shown on every tab
 - **Flexible Styling** - Use any color format (hex, rgb, named colors)
 - **Workspace Specific** - Different button configurations per project
 
@@ -390,6 +497,14 @@ This extension contributes the following settings:
 | -------------------------------- | --------- | ------------------------- | --------------------------------------------------------- |
 | `commandButtons.configFileName`  | `string`  | `".command-buttons.json"` | Name of the configuration file in the workspace root      |
 | `commandButtons.watchConfigFile` | `boolean` | `true`                    | Automatically reload buttons when the config file changes |
+
+### Tab Settings
+
+| Setting                             | Type      | Default       | Description                                                                                                                  |
+| ----------------------------------- | --------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `commandButtons.rememberActiveTab`  | `boolean` | `true`        | Remember the last active tab per workspace and restore it on reload. When off, always start on the default tab               |
+| `commandButtons.defaultActiveTab`   | `string`  | `""`          | Name of the tab to activate by default. Empty means the first tab in config order. Ignored if it doesn't match a tab         |
+| `commandButtons.activeTabHighlight` | `string`  | `"prominent"` | How to highlight the active tab label. Options: `"prominent"`, `"warning"`, or `"none"` (VS Code supports a fixed color set) |
 
 ---
 
