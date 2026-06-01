@@ -549,4 +549,6 @@ This extension contributes the following settings:
 
 ---
 
+> 🛠️ Contributing or building from source? See [DEVELOPMENT.md](DEVELOPMENT.md) for the dev, build, and release workflow.
+
 **Happy coding!** 🎉
