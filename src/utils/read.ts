@@ -213,7 +213,7 @@ export const readConfig = (): NormalizedConfig | undefined => {
         }
 
         const pathStr = p.join(".");
-        return `${pathStr}: ${issue.message}`;
+        return pathStr ? `${pathStr}: ${issue.message}` : issue.message;
       })
       .join("\n• ");
 

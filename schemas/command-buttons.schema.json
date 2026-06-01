@@ -48,6 +48,11 @@
       "required": ["icon", "color"],
       "additionalProperties": false,
       "description": "A status bar button. Provide exactly one action: 'command', 'url', or 'vscodeCommand'.",
+      "oneOf": [
+        { "required": ["command"] },
+        { "required": ["url"] },
+        { "required": ["vscodeCommand"] }
+      ],
       "properties": {
         "icon": {
           "type": "string",

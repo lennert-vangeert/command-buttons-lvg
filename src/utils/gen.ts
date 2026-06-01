@@ -95,8 +95,7 @@ const getAlignment = (): vscode.StatusBarAlignment =>
 const createButtonItem = (
   btn: Button,
   commandId: string,
-  priority: number,
-  context: vscode.ExtensionContext
+  priority: number
 ) => {
   const item = vscode.window.createStatusBarItem(getAlignment(), priority);
 
@@ -134,8 +133,6 @@ const createButtonItem = (
 
   statusBarItems.push(item);
   buttonDisposables.push(disposable);
-  context.subscriptions.push(item);
-  context.subscriptions.push(disposable);
 };
 
 /**
@@ -191,7 +188,7 @@ const createSeparator = (priority: number) => {
  * Priority bands keep left-to-right order:
  * [tab labels] | [pinned] [active buttons].
  */
-const renderItems = (context: vscode.ExtensionContext) => {
+const renderItems = () => {
   clearRenderedItems();
 
   if (!currentConfig) {
@@ -203,7 +200,7 @@ const renderItems = (context: vscode.ExtensionContext) => {
   // Flat config (no tabs): render pinned exactly like before — no labels.
   if (tabs.length === 0) {
     pinned.forEach((btn, i) => {
-      createButtonItem(btn, `commandButtons.runCommand.pinned.${i}`, 100 - i, context);
+      createButtonItem(btn, `commandButtons.runCommand.pinned.${i}`, 100 - i);
     });
     return;
   }
@@ -225,7 +222,7 @@ const renderItems = (context: vscode.ExtensionContext) => {
 
   // Pinned buttons (middle band) — shown on every tab.
   pinned.forEach((btn, i) => {
-    createButtonItem(btn, `commandButtons.runCommand.pinned.${i}`, 500 - i, context);
+    createButtonItem(btn, `commandButtons.runCommand.pinned.${i}`, 500 - i);
   });
 
   // Active tab's buttons (rightmost band).
@@ -235,8 +232,7 @@ const renderItems = (context: vscode.ExtensionContext) => {
       createButtonItem(
         btn,
         `commandButtons.runCommand.tab.${activeIndex}.${i}`,
-        100 - i,
-        context
+        100 - i
       );
     });
   }
@@ -268,10 +264,7 @@ const resolveActiveTab = (config: NormalizedConfig): string => {
  * Registers one tab-switch command per tab. Switching sets the active tab,
  * persists it (per workspace), and re-renders the visible items.
  */
-const registerTabCommands = (
-  config: NormalizedConfig,
-  context: vscode.ExtensionContext
-) => {
+const registerTabCommands = (config: NormalizedConfig) => {
   config.tabs.forEach((tab, tabIndex) => {
     const disposable = vscode.commands.registerCommand(
       `commandButtons.activateTab.${tabIndex}`,
@@ -280,11 +273,10 @@ const registerTabCommands = (
         if (settings.rememberActiveTab && extContext) {
           extContext.workspaceState.update(ACTIVE_TAB_STATE_KEY, tab.name);
         }
-        renderItems(context);
+        renderItems();
       }
     );
     tabCommandDisposables.push(disposable);
-    context.subscriptions.push(disposable);
   });
 };
 
@@ -305,10 +297,10 @@ export const createStatusBarButtons = (
 
   if (config.tabs.length > 0) {
     activeTabName = resolveActiveTab(config);
-    registerTabCommands(config, context);
+    registerTabCommands(config);
   } else {
     activeTabName = null;
   }
 
-  renderItems(context);
+  renderItems();
 };

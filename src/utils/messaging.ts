@@ -14,7 +14,7 @@ export const showErrorMessage = (
 ): void => {
   if (!settings.showErrorNotifications) {
     return;
-  };
+  }
   if (!withButton) {
     vscode.window.showErrorMessage(message);
     return;
@@ -47,7 +47,9 @@ export const showReloadMessage = (
   message: string,
   type: "default" | "initial" = "default"
 ): void => {
-  if (!settings.showReloadNotification) {return;}
+  if (!settings.showReloadNotification) {
+    return;
+  }
 
   if (type === "default") {
     vscode.window.showInformationMessage(message);
